@@ -2,25 +2,27 @@ class BooksController < ApplicationController
 
     rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
+    skip_before_action :authorize, only: [:index, :show]
+
     def index 
         render json: Book.all
     end 
 
     def show 
-        book = Book.find(params[:id])
-        render json: book, 
+        @book = Book.find(params[:id])
+        render json: @book, 
         status: :ok
     end
 
     def create 
-        new_book = Book.create!(book_params)
-        render json: new_book,
+        @new_book = Book.create!(book_params)
+        render json: @new_book,
         status: :created
     end 
 
     def destroy 
-        book = Book.find(params[:id])
-        book.destroy 
+        @book = Book.find(params[:id])
+        @book.destroy 
         head :no_content
     end 
 
